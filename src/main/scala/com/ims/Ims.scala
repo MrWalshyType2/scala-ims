@@ -20,13 +20,12 @@ object Ims {
     PASSWORD = getInput()
 
     if (init(USERNAME, PASSWORD)) menu()
-    else {
+    else
       LOGGER.log(Level.SEVERE, "Could not connect to DB")
       LOGGER.info("Try again?")
 
       if (getInput().toLowerCase() == "y") init()
       System.exit(1) // Something went wrong connecting to the db
-    }
   }
 
   def init(username: String, password: String): Boolean = {
