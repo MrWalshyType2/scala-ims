@@ -1,3 +1,5 @@
 package com.ims.domain
 
-case class Customer(forename: String, surname: String)
+import reactivemongo.api.bson.{BSONObjectID, BSONString}
+
+case class Customer(_id: BSONString, forename: String, surname: String)

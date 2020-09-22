@@ -6,6 +6,7 @@ import java.util.logging.Logger
 import com.ims.controller.OrderController.{LOGGER, getInput}
 import com.ims.dao.CustomerDAO
 import com.ims.domain.Customer
+import reactivemongo.api.bson.{BSONObjectID, BSONString}
 
 object CustomerController extends Controller {
 
@@ -22,7 +23,7 @@ object CustomerController extends Controller {
     LOGGER.info("SURNAME:")
     val surname = getInput()
 
-    CustomerDAO.create(new Customer(forename, surname))
+    CustomerDAO.create(new Customer(BSONString(BSONObjectID.generate().stringify), forename, surname))
   }
 
   override def readAll: Unit = {
@@ -32,7 +33,8 @@ object CustomerController extends Controller {
   override def update: Unit = {
     LOGGER.info("Enter the customer id:")
     val id = getInput()
-    CustomerDAO.readById(id)
+    val customer: Customer = CustomerDAO.readById(id)
+    println(customer)
   }
 
   override def delete: Unit = ???

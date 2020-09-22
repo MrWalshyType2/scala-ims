@@ -8,7 +8,7 @@ import com.ims.domain.Customer
 import com.sun.corba.se.spi.ior.ObjectId
 import reactivemongo.api.bson.collection.BSONCollection
 import reactivemongo.api.{Collection, Cursor}
-import reactivemongo.api.bson.{BSONDocument, BSONObjectID, ElementProducer, document, generateId}
+import reactivemongo.api.bson.{BSONDocument, BSONObjectID, BSONString, ElementProducer, document, generateId}
 
 import scala.List
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -35,7 +35,7 @@ object CustomerDAO extends DAO[Customer] {
         value.foreach(customer => LOGGER.info(customer.toString))
       }
       case Failure(e) => {
-        LOGGER.severe(e.getStackTrace.toString)
+        LOGGER.severe(e.getMessage.toString)
       }
     }
   }
@@ -44,13 +44,13 @@ object CustomerDAO extends DAO[Customer] {
 
   override def delete(id: String): Unit = ???
 
-  def readById(id: String): Unit = {
-    val oid = BSONObjectID.parse(id) // conv id to BSONObjectID
-    val query = BSONDocument("_id" -> oid.get) // create query
+  def readById(id: String): Customer = {
+//    val oid = BSONObjectID.parse(id) // conv id to BSONObjectID
+    val query = BSONDocument("_id" -> id) // create query
 
     val customers: Future[List[Customer]] = customerCollection.flatMap(_.find(query) // parse query
       .cursor[Customer]()
-      .collect[List](-1, Cursor.FailOnError[List[Customer]]())) // collect results into a List of Customer
+      .collect[List](1, Cursor.FailOnError[List[Customer]]())) // collect results into a List of Customer
 
     customers andThen {
       case Success(value) => {
@@ -60,5 +60,12 @@ object CustomerDAO extends DAO[Customer] {
         LOGGER.severe(e.getMessage)
       }
     }
+
+    var customer: Customer = Customer(BSONString(BSONObjectID.generate().stringify), "", "")
+    Await.result(customers, Duration.Inf) {
+      customer = customers.value.get.get.head
+      0
+    }
+    customer
   }
 }
