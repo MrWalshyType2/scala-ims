@@ -1,8 +1,15 @@
 package com.ims.controller
 
+import java.util.logging.Logger
+
 object ItemController extends Controller {
 
-  override def create: Unit = println("item create test")
+  private val LOGGER: Logger = Logger.getLogger(ItemController.getClass.getSimpleName)
+
+  override def create: Unit = {
+    LOGGER.info("ITEM NAME:")
+
+  }
 
   override def readAll: Unit = ???
 
