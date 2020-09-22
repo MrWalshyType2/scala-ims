@@ -45,5 +45,10 @@ object CustomerController extends Controller {
     CustomerDAO.update(updatedCustomer)
   }
 
-  override def delete: Unit = ???
+  override def delete: Unit = {
+    LOGGER.info("Enter the customer id:")
+    val id = getInput()
+
+    CustomerDAO.delete(id)
+  }
 }

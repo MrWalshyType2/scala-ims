@@ -47,7 +47,12 @@ object CustomerDAO extends DAO[Customer] {
     customerCollection.flatMap(_.update.one(selector, customer).map(_.n))
   }
 
-  override def delete(id: String): Unit = ???
+  override def delete(id: String): Unit = {
+    val selector = document(
+      "_id" -> BSONString(id)
+    )
+    customerCollection.flatMap(_.delete.one(selector).map(_.n))
+  }
 
   def readById(id: String): Customer = {
 //    val oid = BSONObjectID.parse(id) // conv id to BSONObjectID
