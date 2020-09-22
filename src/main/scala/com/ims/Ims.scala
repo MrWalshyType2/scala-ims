@@ -16,17 +16,15 @@ object Ims {
   private var USERNAME: String = ""
   private var PASSWORD: String = ""
 
-
-
   // get application context
   import ExecutionContext.Implicits.global
 
   // connection settings
-  val mongoURI = "mongodb://localhost:27017/scala-ims"
+  val mongoURI = "mongodb://localhost:27017"
 
   // Connect to the db
   val driver = new AsyncDriver()
-  val parsedURI = MongoConnection.fromStringWithDB(mongoURI)
+  val parsedURI = MongoConnection.fromString(mongoURI)
 
   val connection = parsedURI.flatMap(driver.connect(_))
   def db: Future[DB] = connection.flatMap(_.database("scala-ims"))
