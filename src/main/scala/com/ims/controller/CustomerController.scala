@@ -1,6 +1,6 @@
 package com.ims.controller
 
-import java.util.Scanner
+import java.util.{Scanner, UUID}
 import java.util.logging.Logger
 
 import com.ims.controller.OrderController.{LOGGER, getInput}
@@ -30,7 +30,9 @@ object CustomerController extends Controller {
   }
 
   override def update: Unit = {
-
+    LOGGER.info("Enter the customer id:")
+    val id = getInput()
+    CustomerDAO.readById(id)
   }
 
   override def delete: Unit = ???
