@@ -24,7 +24,21 @@ object ItemController extends Controller {
     ItemDAO.readAll()
   }
 
-  override def update: Unit = ???
+  override def update: Unit = {
+    LOGGER.info("Enter the item id:")
+    val id = getInput()
+    val item: Item = ItemDAO.readById(id)
+
+    LOGGER.info("Item retrieved successfully")
+    LOGGER.info(item.toString)
+
+    LOGGER.info("NEW NAME:")
+    val name = getInput()
+    LOGGER.info("NEW VALUE:")
+    val value = getInput()
+    val updatedItem = Item(item._id, name, value.toInt)
+    ItemDAO.update(updatedItem)
+  }
 
   override def delete: Unit = ???
 }
