@@ -34,7 +34,15 @@ object CustomerController extends Controller {
     LOGGER.info("Enter the customer id:")
     val id = getInput()
     val customer: Customer = CustomerDAO.readById(id)
-    println(customer)
+    LOGGER.info("Retrieved Customer successfully")
+    LOGGER.info(customer.toString)
+
+    LOGGER.info("FORENAME:")
+    val forename = getInput()
+    LOGGER.info("SURNAME:")
+    val surname = getInput()
+    val updatedCustomer = new Customer(customer._id, forename, surname)
+    CustomerDAO.update(updatedCustomer)
   }
 
   override def delete: Unit = ???

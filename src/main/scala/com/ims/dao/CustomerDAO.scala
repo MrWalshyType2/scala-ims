@@ -40,7 +40,12 @@ object CustomerDAO extends DAO[Customer] {
     }
   }
 
-  override def update(t: Customer): Unit = ???
+  override def update(customer: Customer): Unit = {
+    val selector = document(
+      "_id" -> customer._id
+    )
+    customerCollection.flatMap(_.update.one(selector, customer).map(_.n))
+  }
 
   override def delete(id: String): Unit = ???
 
