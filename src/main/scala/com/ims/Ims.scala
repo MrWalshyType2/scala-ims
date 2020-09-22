@@ -2,6 +2,7 @@ package com.ims
 
 import java.util.logging.{Level, Logger}
 
+import com.ims.controller.{Controller, CustomerController, ItemController, OrderController}
 import com.ims.crud.CRUD
 import com.ims.domain.Domain
 import reactivemongo.api.bson.collection.BSONCollection
@@ -16,22 +17,6 @@ object Ims {
   private var USERNAME: String = ""
   private var PASSWORD: String = ""
 
-  // get application context
-  import ExecutionContext.Implicits.global
-
-  // connection settings
-  val mongoURI = "mongodb://localhost:27017"
-
-  // Connect to the db
-  val driver = new AsyncDriver()
-  val parsedURI = MongoConnection.fromString(mongoURI)
-
-  val connection = parsedURI.flatMap(driver.connect(_))
-  def db: Future[DB] = connection.flatMap(_.database("scala-ims"))
-  def customerCollection: Future[BSONCollection] = db.map(_.collection("customer"))
-  def itemCollection: Future[BSONCollection] = db.map(_.collection("item"))
-  def orderCollection: Future[BSONCollection] = db.map(_.collection("order"))
-
   def menu(): Unit = {
     Domain.getDomains().foreach(domain => println(domain))
     val domain: String = getInput()
@@ -43,21 +28,26 @@ object Ims {
 
       val operation: String = getInput()
 
-      // gonna want some function magic here!!!
-      if (operation.equalsIgnoreCase("CREATE")) createCustomer(new Customer("test", "test"))
-      else if (operation.equalsIgnoreCase("READ")) ???
-      else if (operation.equalsIgnoreCase("UPDATE")) ???
-      else if (operation.equalsIgnoreCase("DELETE")) ???
-      else if (operation.equalsIgnoreCase("RETURN")) ???
+      val crud = List("CREATE", "READ", "UPDATE", "DELETE")
+
+      if (crud.contains(operation.toUpperCase()))
+        if (domain.equalsIgnoreCase("CUSTOMER")) doAction(CustomerController: Controller, operation)
+        else if (domain.equalsIgnoreCase("ITEM")) doAction(ItemController: Controller, operation)
+        else if (domain.equalsIgnoreCase("ORDER")) doAction(OrderController: Controller, operation)
       else LOGGER.warning(s"Invalid input | DOMAIN: $domain, OPERATION: $operation")
 
     menu()
   }
-  implicit def customerWriter: BSONDocumentWriter[Customer] = Macros.writer[Customer]
 
-  def createCustomer(customer: Customer): Future[Unit] =
-    customerCollection.flatMap(_.insert.one(customer).map(_ => {}))
+  def doAction(controller: Controller, operation: String): Unit = {
+    if (operation.equalsIgnoreCase("CREATE")) controller.create
+    else if (operation.equalsIgnoreCase("READ")) controller.readAll
+    else if (operation.equalsIgnoreCase("UPDATE")) controller.update
+    else if (operation.equalsIgnoreCase("DELETE")) controller.delete
+  }
 
-  case class Customer(forename: String, surname: String)
+
+//  def createCustomer(customer: Customer): Future[Unit] =
+//    customerCollection.flatMap(_.insert.one(customer).map(_ => {}))
 
 }
