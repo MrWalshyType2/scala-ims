@@ -40,5 +40,10 @@ object ItemController extends Controller {
     ItemDAO.update(updatedItem)
   }
 
-  override def delete: Unit = ???
+  override def delete: Unit = {
+    LOGGER.info("Enter the item id:")
+    val id = getInput()
+
+    ItemDAO.delete(id)
+  }
 }

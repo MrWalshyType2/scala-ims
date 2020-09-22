@@ -44,7 +44,12 @@ object ItemDAO extends DAO[Item] {
     itemCollection.flatMap(_.update.one(selector, item).map(_.n))
   }
 
-  override def delete(id: String): Unit = ???
+  override def delete(id: String): Unit = {
+    val selector = document(
+      "_id" -> BSONString(id)
+    )
+    itemCollection.flatMap(_.delete.one(selector).map(_.n))
+  }
 
   def readById(id: String): Item = {
     var item: Item = Item(BSONString(BSONObjectID.generate().stringify), "", 0)
