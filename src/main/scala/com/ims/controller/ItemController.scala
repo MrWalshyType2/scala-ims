@@ -20,7 +20,9 @@ object ItemController extends Controller {
     ItemDAO.create(Item(BSONString(BSONObjectID.generate().stringify), name, value.toInt))
   }
 
-  override def readAll: Unit = ???
+  override def readAll: Unit = {
+    ItemDAO.readAll()
+  }
 
   override def update: Unit = ???
 
