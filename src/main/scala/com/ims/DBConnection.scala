@@ -1,6 +1,6 @@
 package com.ims
 
-import com.ims.Ims.Customer
+import com.ims.domain.Customer
 import reactivemongo.api.bson.{BSONDocumentReader, BSONDocumentWriter, Macros}
 import reactivemongo.api.{AsyncDriver, DB, MongoConnection}
 import reactivemongo.api.bson.collection.BSONCollection

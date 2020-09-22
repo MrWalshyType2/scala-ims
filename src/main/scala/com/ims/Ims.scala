@@ -5,11 +5,6 @@ import java.util.logging.{Level, Logger}
 import com.ims.controller.{Controller, CustomerController, ItemController, OrderController}
 import com.ims.crud.CRUD
 import com.ims.domain.Domain
-import reactivemongo.api.bson.collection.BSONCollection
-import reactivemongo.api.{AsyncDriver, Cursor, DB, MongoConnection}
-import reactivemongo.api.bson.{BSONDocumentReader, BSONDocumentWriter, Macros, document}
-
-import scala.concurrent.{ExecutionContext, Future}
 
 object Ims {
 
@@ -44,8 +39,8 @@ object Ims {
     else if (operation.equalsIgnoreCase("READ")) controller.readAll
     else if (operation.equalsIgnoreCase("UPDATE")) controller.update
     else if (operation.equalsIgnoreCase("DELETE")) controller.delete
+    else println(s"Invalid --> doAction() $operation")
   }
-
 
 //  def createCustomer(customer: Customer): Future[Unit] =
 //    customerCollection.flatMap(_.insert.one(customer).map(_ => {}))
