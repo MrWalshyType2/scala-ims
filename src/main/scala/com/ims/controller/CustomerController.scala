@@ -29,7 +29,9 @@ object CustomerController extends Controller {
     CustomerDAO.readAll()
   }
 
-  override def update: Unit = ???
+  override def update: Unit = {
+
+  }
 
   override def delete: Unit = ???
 }
