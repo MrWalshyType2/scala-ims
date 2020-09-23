@@ -58,7 +58,9 @@ object OrderController extends Controller {
       LOGGER.info("Order created successfully!")
   }
 
-  override def readAll: Unit = ???
+  override def readAll: Unit = {
+    OrderDAO.readAll()
+  }
 
   override def update: Unit = ???
 

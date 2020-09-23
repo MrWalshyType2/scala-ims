@@ -1,4 +1,4 @@
-import com.ims.domain.Item
+import com.ims.domain.{Item, Order}
 import reactivemongo.api.bson.BSONHandler.provided
 import reactivemongo.api.bson.{BSONArray, BSONDocument, BSONInteger, BSONObjectID, BSONString, document}
 
@@ -42,3 +42,9 @@ upItems.elements.foreach(element => {
   println(element.name)
   println(BSONInteger.unapply(element.value).get)
 })
+
+val order = Order(BSONString(BSONObjectID.generate().stringify),
+  BSONString(BSONObjectID.generate().stringify),
+  BSONDocument(BSONObjectID.generate().stringify -> 1))
+
+println(order.toString())
