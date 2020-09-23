@@ -42,7 +42,12 @@ object OrderDAO extends DAO[Order] {
     orderCollection.flatMap(_.update.one(selector, order).map(_.n))
   }
 
-  override def delete(id: String): Unit = ???
+  override def delete(id: String): Unit = {
+    val selector = document(
+      "_id" -> BSONString(id)
+    )
+    orderCollection.flatMap(_.delete.one(selector).map(_.n))
+  }
 
   def readById(id: String): Order = {
     val query = BSONDocument("_id" -> id)

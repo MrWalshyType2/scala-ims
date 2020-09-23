@@ -81,7 +81,13 @@ object OrderController extends Controller {
     LOGGER.info("Order updated successfully")
   }
 
-  override def delete: Unit = ???
+  override def delete: Unit = {
+    LOGGER.info("Enter the order id:")
+    val id = getInput()
+
+    OrderDAO.delete(id)
+    LOGGER.info("Order deleted successfully")
+  }
 
   @tailrec
   private def getInputLoop(validTerms: Seq[String]): String = {
