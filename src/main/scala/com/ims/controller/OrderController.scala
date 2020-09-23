@@ -5,7 +5,7 @@ import java.util.logging.Logger
 import com.ims.Utility.getInput
 import com.ims.dao.{ItemDAO, OrderDAO}
 import com.ims.domain.{Item, Order}
-import reactivemongo.api.bson.{BSONDocument, BSONInteger, BSONObjectID, BSONString}
+import reactivemongo.api.bson.{BSONDocument, BSONElement, BSONInteger, BSONObjectID, BSONString}
 
 import scala.:+
 import scala.annotation.tailrec
@@ -35,6 +35,8 @@ object OrderController extends Controller {
 
       if (answer == "N") {
         OrderDAO.create(updatedOrder)
+        LOGGER.info(updatedOrder.toString)
+        LOGGER.info(f"ORDER COST: £${calculateCost(updatedOrder.orderItems.elements)}%.2f")
         LOGGER.info("Order created successfully!")
       }
       else addItemLoop(updatedOrder)
@@ -53,9 +55,12 @@ object OrderController extends Controller {
     val answer = getInputLoop(Seq("Y", "N"))
 
     if (answer.equalsIgnoreCase("Y")) addItemLoop(order)
-    else
+    else {
       OrderDAO.create(order: Order)
       LOGGER.info("Order created successfully!")
+      LOGGER.info(order.toString)
+      LOGGER.info(f"ORDER COST: £${calculateCost(order.orderItems.elements)}%.2f")
+    }
   }
 
   override def readAll: Unit = {
@@ -79,6 +84,8 @@ object OrderController extends Controller {
     }
     OrderDAO.update(updatedOrder)
     LOGGER.info("Order updated successfully")
+    LOGGER.info(updatedOrder.toString)
+    LOGGER.info(f"ORDER COST: £${calculateCost(updatedOrder.orderItems.elements)}%.2f")
   }
 
   override def delete: Unit = {
@@ -87,6 +94,17 @@ object OrderController extends Controller {
 
     OrderDAO.delete(id)
     LOGGER.info("Order deleted successfully")
+  }
+
+  private def calculateCost(itemIds: Seq[BSONElement]): Double = {
+    val items = itemIds.map { itemTuple => itemTuple.name -> BSONInteger.unapply(itemTuple.value).get }
+
+    @tailrec
+    def calculate(cost: Double, count: Int, items: Seq[Tuple2[String, Int]]): Double = {
+      if (count < 0) cost / 100.00
+      else calculate(cost + (ItemDAO.readById(items(count)._1).value * items(count)._2), count - 1, items) // cost + (item_value * amount)
+    }
+    calculate(0, items.length - 1, items)
   }
 
   @tailrec
