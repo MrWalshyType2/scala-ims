@@ -28,7 +28,7 @@ object ItemDAO extends DAO[Item] {
     items andThen {
       case Success(value) => {
         value.foreach(item => {
-          LOGGER.info(s"\nID: ${item._id}\nNAME: ${item.name}\nVALUE: £${item.value/100}")
+          LOGGER.info(f"\nID: ${item._id}\nNAME: ${item.name}\nVALUE: £${item.value/100.00}%.2f")
         })
       }
       case Failure(e) => {
