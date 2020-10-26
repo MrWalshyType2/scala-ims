@@ -5,14 +5,13 @@ import java.util.logging.Logger
 
 import com.ims.controller.OrderController.LOGGER
 import com.ims.domain.dao.CustomerDao
-import com.ims.domain.model.Id
 import com.ims.domain.model.customer.Customer
 import com.ims.domain.services.CustomerService
 import reactivemongo.api.bson.{BSONObjectID, BSONString}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-import scala.util.Success
+import scala.util.{Failure, Success}
 
 object CustomerController extends Controller {
 
@@ -28,7 +27,7 @@ object CustomerController extends Controller {
     val forename = getInput()
     LOGGER.info("SURNAME:")
     val surname = getInput()
-    val id = Id(BSONString(BSONObjectID.generate.stringify))
+    val id = BSONObjectID.generate
     val customer = Customer(id, forename, surname)
 
     val newCustomer = CustomerDao.create(customer)
@@ -39,28 +38,55 @@ object CustomerController extends Controller {
   }
 
   override def readAll: Unit = {
-    CustomerDao.readAll()
+    val customers = CustomerDao.readAll()
+    customers andThen {
+      case Success(value) => value.foreach(println)
+      case Failure(exception) => println(exception)
+    }
   }
 
   override def update: Unit = {
     LOGGER.info("Enter the customer id:")
-    val id = Id(BSONString(getInput()))
-    val customer: Future[Option[Customer]] = CustomerDao.readById(id)
-    LOGGER.info("Retrieved Customer successfully")
-    LOGGER.info(customer.toString)
+    val cid = BSONObjectID.parse(getInput())
+    val id = cid match {
+      case Success(value) => value
+      case Failure(exception) => throw exception
+    }
 
+    val customer: Future[Option[Customer]] = CustomerDao.readById(id)
+    customer.flatMap {
+      case Some(value) => {
+        LOGGER.info("Retrieved Customer successfully")
+        LOGGER.info(value.toString)
+        Future(None)
+      }
+      case None => {
+        LOGGER.info("Customer does not exist")
+        Future(None)
+      }
+    }
     LOGGER.info("FORENAME:")
     val forename = getInput()
     LOGGER.info("SURNAME:")
     val surname = getInput()
     val updatedCustomer = Customer(id, forename, surname)
-    CustomerDao.update(updatedCustomer)
+    val cust = CustomerDao.update(updatedCustomer)
+
+    cust andThen {
+      case Success(value) => value match {
+        case Some(value) => println("UPDATED CUSTOMER: " + updatedCustomer)
+        case None => println("Customer failed to update successfully")
+      }
+      case Failure(exception) => println(exception)
+    }
   }
 
   override def delete: Unit = {
     LOGGER.info("Enter the customer id:")
-    val id = Id(BSONString(getInput()))
-
+    val id = BSONObjectID.parse(getInput()) match {
+      case Success(value) => value
+      case Failure(exception) => throw exception
+    }
     CustomerDao.delete(id)
   }
 }

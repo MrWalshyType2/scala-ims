@@ -1,6 +1,5 @@
 package com.ims
 
-import com.ims.domain.model.Id
 import com.ims.domain.model.customer.Customer
 import com.ims.domain.{Item, Order}
 import reactivemongo.api.bson.{BSONDocumentHandler, BSONDocumentReader, BSONDocumentWriter, BSONWriter, Macros}
@@ -29,8 +28,6 @@ object DBConnection {
 
   implicit def customerWriter: BSONDocumentWriter[Customer] = Macros.writer[Customer]
   implicit def customerReader: BSONDocumentReader[Customer] = Macros.reader[Customer]
-  implicit def idWriter: BSONDocumentWriter[Id] = Macros.writer[Id]
-  implicit def idReader: BSONDocumentReader[Id] = Macros.reader[Id]
   implicit def itemWriter: BSONDocumentWriter[Item] = Macros.writer[Item]
   implicit def itemReader: BSONDocumentReader[Item] = Macros.reader[Item]
   implicit def orderWriter: BSONDocumentWriter[Order] = Macros.writer[Order]

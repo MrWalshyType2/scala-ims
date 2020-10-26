@@ -1,15 +1,26 @@
 package com.ims.domain.model.customer
 
-import com.ims.domain.model.Id
-import reactivemongo.api.bson.BSONString
+import reactivemongo.api.bson
+import reactivemongo.api.bson.{BSONObjectID, BSONString}
 
-case class Customer(_id: Id = Id(BSONString("")), forename: String = "", surname: String = "") {
+import scala.util.{Failure, Success}
+
+case class Customer(_id: BSONObjectID = BSONObjectID.generate, forename: String = "", surname: String = "") {
+
   def setId(_id: String, customer: Customer): Customer = {
-    val newId = BSONString(_id)
-    customer.copy(_id = Id(newId))
+    val newId = BSONObjectID.parse(_id)
+    newId match {
+      case Success(value) => customer.copy(_id = value)
+      case Failure(exception) => customer
+    }
   }
 
-  def removeId(customer: Customer): Customer = customer.copy(_id = Id())
+  def removeId(customer: Customer): Customer = {
+    BSONObjectID.parse("") match {
+      case Success(value) => customer.copy(_id = value)
+      case Failure(exception) => customer
+    }
+  }
 
   def setForename(forename: String, customer: Customer): Customer = customer.copy(forename = forename)
 

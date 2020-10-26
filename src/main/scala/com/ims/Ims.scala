@@ -16,7 +16,7 @@ object Ims {
     Domain.getDomains().foreach(domain => println(domain))
     val domain: String = getInput()
 
-    if (domain.equalsIgnoreCase("EXIT")) System.exit(0)
+    if (domain.equalsIgnoreCase("EXIT")) sys.exit(0)
     else
       LOGGER.info(s"What would you like to do with $domain?")
       CRUD.getValues().foreach(value => println(value))
