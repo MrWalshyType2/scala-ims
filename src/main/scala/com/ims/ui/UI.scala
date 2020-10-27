@@ -67,7 +67,7 @@ class UI extends MainFrame {
 
   var mainPanel = mainPanelBuilder(topButtons, leftMenu, table)
 
-  listenTo(`customerBtn`, `itemBtn`, `orderBtn`, `createBtn`)
+  listenTo(`customerBtn`, `itemBtn`, `orderBtn`, `createBtn`, `readBtn`, `updateBtn`, `deleteBtn`)
 
   reactions += {
     case ButtonClicked(`customerBtn`) => {
@@ -90,7 +90,10 @@ class UI extends MainFrame {
       contents = mainPanelBuilder(topButtons, leftMenu, table)
       table.contents = new Table(getItemData(), itemHeaders)
     }
-    case ButtonClicked(`createBtn`) => contents = mainPanelBuilder(topButtons, leftMenu, new CreationForm().creationForm)
+    case ButtonClicked(`createBtn`) => contents = mainPanelBuilder(topButtons, leftMenu, Form.creationForm)
+    case ButtonClicked(`updateBtn`) => contents = mainPanelBuilder(topButtons, leftMenu, Form.updateForm)
+    case ButtonClicked(`deleteBtn`) => contents = mainPanelBuilder(topButtons, leftMenu, Form.deleteForm)
+    case ButtonClicked(`readBtn`) => contents = mainPanelBuilder(topButtons, leftMenu, Form.readForm)
     case ButtonClicked(button) => println(s"Clicked button: ${button.text}")
   }
 
