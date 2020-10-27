@@ -16,6 +16,7 @@ import scala.concurrent.impl.Promise
 import scala.util.{Failure, Success}
 
 class UI extends MainFrame {
+  // change to Controller once reprogrammed
   val customerDao = CustomerDao
 
   title = "IMS"

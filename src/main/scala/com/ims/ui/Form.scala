@@ -14,6 +14,7 @@ import scala.util.{Failure, Success}
 
 object Form {
 
+  // Change to Controller once reprogrammed
   val customerDao = CustomerDao
 
   def creationForm = new BoxPanel(Orientation.Vertical) {
