@@ -63,79 +63,16 @@ class UI extends MainFrame {
     Array("9t8h9453th8h9th98", "Apples", "Fruit", 00.20, 32)
   )
 
-  val creationForm = new BoxPanel(Orientation.Vertical) {
-    val customerId = new TextField()
-    val customerForename = new TextField()
-    val customerSurname = new TextField()
-    val createCustomerBtn = new Button("Submit")
-
-    contents += new GridPanel(9, 12) {
-      background = Color.WHITE
-      contents += new Label("Customer") {
-        background = Color.DARK_GRAY
-        opaque = true
-        foreground = Color.WHITE
-      }
-      contents += new GridPanel(2, customerHeaders.length - 1) {
-        customerHeaders.foreach(header => if (header != "ID") contents += new Label(header))
-        contents += customerForename
-        contents += customerSurname
-      }
-      contents += createCustomerBtn
-
-      contents += new Label("Item") {
-        background = Color.DARK_GRAY
-        opaque = true
-        foreground = Color.WHITE
-      }
-      contents += new GridPanel(2, itemHeaders.length) {
-        itemHeaders.foreach(header => contents += new Label(header))
-        itemHeaders.foreach(header => contents += new TextField(header))
-      }
-      val createItemBtn = new Button("Submit")
-      contents += createItemBtn
-
-      contents += new Label("Order") {
-        background = Color.DARK_GRAY
-        opaque = true
-        foreground = Color.WHITE
-      }
-      contents += new GridPanel(2, orderHeaders.length) {
-        orderHeaders.foreach(header => contents += new Label(header))
-        orderHeaders.foreach(header => contents += new TextField(header))
-      }
-      val createOrderBtn = new Button("Submit")
-      contents += createOrderBtn
-
-      listenTo(`createCustomerBtn`, `createItemBtn`, `createOrderBtn`)
-
-      reactions += {
-        case ButtonClicked(`createCustomerBtn`) => {
-          println("Creating customer")
-          createCustomer(customerForename.text, customerSurname.text)
-        }
-      }
-    }
-  }
-
   var table = new ScrollPane(new Table(customerRowData, customerHeaders))
 
-  var mainPanel = new BorderPanel {
-    add(topButtons, BorderPanel.Position.North)
-    add(leftMenu, BorderPanel.Position.West)
-    add(table, BorderPanel.Position.Center)
-  }
+  var mainPanel = mainPanelBuilder(topButtons, leftMenu, table)
 
   listenTo(`customerBtn`, `itemBtn`, `orderBtn`, `createBtn`)
 
   reactions += {
     case ButtonClicked(`customerBtn`) => {
       println("Customer btn clicked")
-      contents = new BorderPanel {
-        add(topButtons, BorderPanel.Position.North)
-        add(leftMenu, BorderPanel.Position.West)
-        add(table, BorderPanel.Position.Center)
-      }
+      contents = mainPanelBuilder(topButtons, leftMenu, table)
       val results = getCustomerData()
       results andThen {
         case Success(value) => {
@@ -150,30 +87,33 @@ class UI extends MainFrame {
     }
     case ButtonClicked(`itemBtn`) => {
       println("Item btn clicked")
-      contents = new BorderPanel {
-        add(topButtons, BorderPanel.Position.North)
-        add(leftMenu, BorderPanel.Position.West)
-        add(table, BorderPanel.Position.Center)
-      }
+      contents = mainPanelBuilder(topButtons, leftMenu, table)
       table.contents = new Table(getItemData(), itemHeaders)
     }
-    case ButtonClicked(`createBtn`) => contents = new BorderPanel {
-      add(topButtons, BorderPanel.Position.North)
-      add(leftMenu, BorderPanel.Position.West)
-      add(creationForm, BorderPanel.Position.Center)
-    }
+    case ButtonClicked(`createBtn`) => contents = mainPanelBuilder(topButtons, leftMenu, new CreationForm().creationForm)
     case ButtonClicked(button) => println(s"Clicked button: ${button.text}")
   }
 
   contents = mainPanel
 
-  def getCustomerData() = {
-    customerDao.readAll()
+  def mainPanelBuilder(top: GridPanel, left: GridPanel, centre: ScrollPane): BorderPanel = {
+    new BorderPanel {
+      add(top, BorderPanel.Position.North)
+      add(left, BorderPanel.Position.West)
+      add(centre, BorderPanel.Position.Center)
+    }
   }
 
-  def createCustomer(customerForename: String, customerSurname: String): Unit = {
-    val customer = Customer(BSONObjectID.generate(), customerForename, customerSurname)
-    customerDao.create(customer)
+  def mainPanelBuilder(top: GridPanel, left: GridPanel, centre: BoxPanel): BorderPanel = {
+    new BorderPanel {
+      add(top, BorderPanel.Position.North)
+      add(left, BorderPanel.Position.West)
+      add(centre, BorderPanel.Position.Center)
+    }
+  }
+
+  def getCustomerData() = {
+    customerDao.readAll()
   }
 
   def getItemData() = {
