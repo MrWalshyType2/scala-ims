@@ -1,4 +1,4 @@
-package com.ims.domain.model
+package com.ims.domain.model.order
 
 import reactivemongo.api.bson.{BSONDocument, BSONObjectID}
 

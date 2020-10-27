@@ -3,7 +3,6 @@ package com.ims.controller
 import java.util.logging.Logger
 
 import com.ims.Utility.getInput
-import com.ims.domain.{Item, Order}
 import reactivemongo.api.bson.{BSONDocument, BSONElement, BSONInteger, BSONObjectID, BSONString}
 
 import scala.:+
