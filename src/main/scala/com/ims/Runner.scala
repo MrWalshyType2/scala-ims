@@ -1,6 +1,9 @@
 package com.ims
 
-object Runner extends App {
+import com.ims.ui.UI
 
-  Ims.menu()
+import scala.swing.{Frame, SimpleSwingApplication}
+
+object Runner extends SimpleSwingApplication {
+  override def top: Frame = new UI
 }

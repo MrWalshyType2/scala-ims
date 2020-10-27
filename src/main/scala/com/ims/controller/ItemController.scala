@@ -3,52 +3,23 @@ package com.ims.controller
 import java.util.logging.Logger
 
 import com.ims.Utility.getInput
+import com.ims.domain.dao.{BaseDaoInterface, ItemDao}
+import com.ims.domain.model.item.Item
 import reactivemongo.api.bson.{BSONObjectID, BSONString}
 
-object ItemController extends Controller {
+import scala.concurrent.Future
 
-//  private val LOGGER: Logger = Logger.getLogger(ItemController.getClass.getSimpleName)
-//
-//  override def create: Unit = {
-//    LOGGER.info("ITEM NAME:")
-//    val name: String = getInput()
-//    LOGGER.info("ITEM VALUE:")
-//    val value: String = getInput()
-//
-//    ItemDAO.create(Item(BSONString(BSONObjectID.generate().stringify), name, value.toInt))
-//  }
-//
-//  override def readAll: Unit = {
-//    ItemDAO.readAll()
-//  }
-//
-//  override def update: Unit = {
-//    LOGGER.info("Enter the item id:")
-//    val id = getInput()
-//    val item: Item = ItemDAO.readById(id)
-//
-//    LOGGER.info("Item retrieved successfully")
-//    LOGGER.info(item.toString)
-//
-//    LOGGER.info("NEW NAME:")
-//    val name = getInput()
-//    LOGGER.info("NEW VALUE:")
-//    val value = getInput()
-//    val updatedItem = Item(item._id, name, value.toInt)
-//    ItemDAO.update(updatedItem)
-//  }
-//
-//  override def delete: Unit = {
-//    LOGGER.info("Enter the item id:")
-//    val id = getInput()
-//
-//    ItemDAO.delete(id)
-//  }
-  override def create: Unit = ???
+object ItemController extends Controller[Item] {
 
-  override def readAll: Unit = ???
+  val dao = ItemDao
 
-  override def update: Unit = ???
+  override def create(item: Item): Future[Option[Item]] = dao.create(item)
 
-  override def delete: Unit = ???
+  override def readById(id: BSONObjectID): Future[Option[Item]] = dao.readById(id)
+
+  override def readAll(): Future[List[Item]] = dao.readAll()
+
+  override def update(item: Item): Future[Option[Item]] = dao.update(item)
+
+  override def delete(id: BSONObjectID): Unit = dao.delete(id)
 }

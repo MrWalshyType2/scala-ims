@@ -2,6 +2,8 @@ package com.ims.ui
 
 import java.awt.{Color, ComponentOrientation}
 
+import com.ims.controller.CustomerController
+
 import scala.swing.Swing.{CompoundBorder, EmptyBorder, EtchedBorder, TitledBorder}
 import scala.swing.event.{ButtonClicked, EditDone}
 import scala.swing.{Action, BorderPanel, BoxPanel, Button, ButtonGroup, CheckBox, Component, Dimension, FlowPanel, Graphics2D, GridBagPanel, GridPanel, Label, ListView, MainFrame, Menu, MenuBar, MenuItem, Orientation, PasswordField, RadioButton, Reactor, ScrollPane, Separator, SplitPane, Swing, TabbedPane, Table, TextArea, TextField, TextPane, ToggleButton}
@@ -17,7 +19,7 @@ import scala.util.{Failure, Success}
 
 class UI extends MainFrame {
   // change to Controller once reprogrammed
-  val customerDao = CustomerDao
+  val customerController = CustomerController
 
   title = "IMS"
 
@@ -117,7 +119,7 @@ class UI extends MainFrame {
   }
 
   def getCustomerData() = {
-    customerDao.readAll()
+    customerController.readAll()
   }
 
   def getItemData() = {
