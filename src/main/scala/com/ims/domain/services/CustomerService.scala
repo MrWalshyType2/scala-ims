@@ -1,11 +1,14 @@
 package com.ims.domain.services
 
+import com.ims.domain.dao.BaseDaoInterface
 import com.ims.domain.model.customer.Customer
 import reactivemongo.api.bson.{BSONObjectID, BSONString}
 
 import scala.util.{Failure, Success}
 
 trait CustomerService extends CustomerServiceInterface {
+
+//  override val dao: BaseDaoInterface[Customer] = ???
 
   override def setId(_id: String, customer: Customer): Customer = {
     val newId = BSONObjectID.parse(_id) match {

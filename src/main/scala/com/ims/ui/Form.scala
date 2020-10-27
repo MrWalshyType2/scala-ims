@@ -14,6 +14,7 @@ import scala.util.{Failure, Success}
 
 object Form {
 
+  val customPurple = new Color(130,85,255)
   // Change to Controller once reprogrammed
   val customerDao = CustomerDao
 
@@ -26,6 +27,7 @@ object Form {
     val customerForename = new TextField()
     val customerSurname = new TextField()
     val createCustomerBtn = new Button("Submit")
+    createCustomerBtn.background = customPurple
 
     contents += new GridPanel(9, 12) {
       background = Color.WHITE
@@ -50,7 +52,7 @@ object Form {
         itemHeaders.foreach(header => contents += new Label(header))
         itemHeaders.foreach(header => contents += new TextField(header))
       }
-      val createItemBtn = new Button("Submit")
+      val createItemBtn = new Button("Submit"){background = customPurple}
       contents += createItemBtn
 
       contents += new Label("Order") {
@@ -62,7 +64,7 @@ object Form {
         orderHeaders.foreach(header => contents += new Label(header))
         orderHeaders.foreach(header => contents += new TextField(header))
       }
-      val createOrderBtn = new Button("Submit")
+      val createOrderBtn = new Button("Submit") {background = customPurple}
       contents += createOrderBtn
 
       listenTo(`createCustomerBtn`, `createItemBtn`, `createOrderBtn`)
